@@ -18,6 +18,12 @@ def draw_text(c, x0, y0, text, size):
     c.setFont("Helvetica", size)
     c.drawString(x0, y0, text)
 
+
+
+
+
+
+
   
 sheet_from = (421.6, 298.1)
 sheet_to = (A3[1], A3[0])
@@ -133,49 +139,109 @@ for titl, val in zip(Titulos, Valores):
 # # BODYBOXES #
 # ############
 
+# Títulos
+x_l, y_t = 25.1, 44.5   # Applies to first box, to set up starting point
+y_c = (28.8,198.5)
+main_boxes_w = (26.9,114,4.5,16.4,10.7,11.9,19.5,16.3,35.1,129.1)
+w_spac = 0.2  # in mm
+
+size_cols = [       # in mm
+    (5.8,4.4,4.4,4.4,4.4,3.5),
+    (12,91,3.9,3.9),
+    (),
+    (),
+    (),
+    (),
+    (),
+    (),
+    (5.1,8.8,16.5,4.9),
+    (1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+    ]
+
+titulos_per_box = [
+    ('Profundidad (m)'),
+    (''),
+    (''),
+    (''),
+    (''),
+    (''),
+    (''),
+    (''),
+    (''),
+    ('')
+    ]
+
+bbox_titl = []
+    
+for l, a in zip(main_boxes_w, size_cols):
+    r_data = rect_data(sheet_from, ratio=True, w_l=x_l, w_c=l, h_t=y_t, h_c=y_c[0])
+    draw_box(c, r_data['w_l'], r_data['h_b'], r_data['w_c'], r_data['h_c'])
+    bbox_titl.append(r_data)
+    
+    start_p = r_data['w_l']
+    for x in a:        
+        draw_box(c, start_p, r_data['h_b'], r_data['w_c']*x/sum(a), r_data['h_c'])
+        draw_box(c, start_p, r_data['h_b'], r_data['w_c']*x/sum(a), r_data['h_c'])
+        start_p += r_data['w_c']*x/sum(a)
+    x_l += l + w_spac
+
+
+
+    
+
+
+'''
+
+for box in col_per_box:
+    for x in range(box):
+        
+'''
+
+'''
+# Boxes
+
+x_l, y_b = 25.1, 21.4  # Applies to first box, to set up starting point
+boxes_length = (26.5,114,4.5,16.4,10.7,11.9,19.5,16.3,35.1,129.1)
+boxes_height = (198.5, 28.5)
+w_spac = 0
+tbox = []
+
+for l in boxes_length: 
+    r_data = rect_data(sheet_from, ratio=True, w_l=x_l, w_c=l, h_b=y_b, h_c=boxes_height[0])
+    draw_box(c, r_data['w_l'], r_data['h_b'], r_data['w_c'], r_data['h_c'])
+    
+    draw_box(c, r_data['w_l'], r_data['h_b'], r_data['w_c'], r_data['h_c'])
+    
+    
+    
+    tbox.append(r_data)
+    x_l += l + w_spac
+'''
+'''
+
+x0, y0 = 25, 26.7 # LeftBottomPoint => Dist_from_Left, Dist_from_Bottom
+boxes_length = (26.5,114,4.5,16.4,10.7,11.9,19.5,16.3,35.1,129.1)
+boxes_height = (198.5, 28.5)
+spac = 0.25
+
+for x in range(len(boxes_length)):
+    draw_box(c, x0, y0, boxes_length[x], boxes_height[0])
+    draw_box(c, x0, y0 + boxes_height[0], boxes_length[x], boxes_height[1])
+    x0 += boxes_length[x] + spac
 
 
 # ###############
 # # BOTTOMBOXES #
 # ###############
 
-x_l = 24.6  # Applies to first box, to set up starting point
-y_b , y_c = 15.8, 10.5 # Common to all boxes
+x0, y0 = 24.6, 15.8 # LeftBottomPoint => Dist_from_Left, Dist_from_Bottom
 boxes_length = (166.8, 219.2)
-w_spac = 0.5
-bbox = []
+boxes_height = 10.5
+spac = 0.5
 
-for l in boxes_length: 
-    r_data = rect_data(sheet_from, ratio=True, w_l=x_l, w_c=l, h_b=y_b, h_c=y_c)   
-    draw_box(c, r_data['w_l'], r_data['h_b'], r_data['w_c'], r_data['h_c'])
-    bbox.append(r_data)
-    x_l += l + w_spac
-
-
-# Texto Box 1
-box_ID = 0
-xt, yt = 0.003, 0.015 # Dist_from_Left, Dist_from_Top of box in ratio!!
-draw_text(c, bbox[box_ID]['w_l'] + xt, 1 - bbox[box_ID]['h_t'] - yt, '', 8)
-
-
-# Texto Box 2 (VALORES *******)
-
-#**********************************
-box_ID = 1
-xt, yt = 0.003, 0.015 # Dist_from_Left, Dist_from_Top of first text in ratio!!
-vert_spac = 0.016
-Titulos = ['Supervisor:', 'Empresa:', 'Sondista:', 'Equipo:']
-Valores = ['Antonio Muñoz Algobia (IDOM)', 'IDOM', 'Jose M.', 'TP-50 ORUGA']
-Size = 8
-xt_val = 0.04
-# *********************************
-
-for titl, val in zip(Titulos, Valores):
-    draw_text(c, bbox[box_ID]['w_l'] + xt, 1 - bbox[box_ID]['h_t'] - yt, titl, Size)
-    draw_text(c, bbox[box_ID]['w_l'] + xt_val, 1 - bbox[box_ID]['h_t'] - yt, val, Size)
-    yt += vert_spac
-
-
-
+for x in range(len(boxes_length)):
+    draw_box(c, x0, y0, boxes_length[x], boxes_height)
+    x0 += boxes_length[x] + spac
+'''
 c.showPage()
 c.save()

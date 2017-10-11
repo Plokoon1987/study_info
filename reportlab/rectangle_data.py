@@ -40,10 +40,3 @@ def rect_data(sheet, ratio=False, **kwargs):
 			rect_data.update(rect_h_data)
 	
 	return(rect_data)
-
-
-A3_mm = (421.6, 298.1)
-#A3_mm = (100, 100)
-
-print(rect_data(A3_mm, w_l=15, w_r=35, h_b=5, h_t=15))
-print(rect_data(A3_mm, ratio=True, w_l=15, w_r=35, h_b=5, h_t=15))
