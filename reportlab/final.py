@@ -2,7 +2,6 @@ from rectangle_data import rect_data
 
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A3, landscape
-from reportlab.platypus import Image, Frame
 from reportlab.lib.units import mm
 
 def draw_box(c, x0, y0, w, h):
