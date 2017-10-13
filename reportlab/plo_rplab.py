@@ -15,7 +15,7 @@ def rect_data(sheet, ratio=False, **kwargs):
 	elif len(set(kwargs) & set(rect_w_data)) != 2:
 		ans = '2 width params and 2 height params are expected'	
 	else: valid = True
-	# END DATA VALIDATION#
+	# END DATA VALIDATION #
 		
 	if valid == True:
 		w_sum, h_sum = 0, 0 
@@ -43,6 +43,7 @@ def rect_data(sheet, ratio=False, **kwargs):
 
 
 def draw_box(c, rect, sheet):
+	c.saveState()
 	rect = dict(rect)
 	for key, val in rect.items():
 		if 'w' in key:
@@ -52,9 +53,11 @@ def draw_box(c, rect, sheet):
 	c.setFillColorRGB(1,1,1) # Color fill (white is default)
 	c.setLineWidth(0.1)
 	c.rect(rect['w_l'], rect['h_b'], rect['w_c'], rect['h_c'], fill=1)
+	c.restoreState()
 
 
-def draw_text(c, rect, sheet, text, size):
+def draw_text(c, rect, sheet, text, size, **kwargs):
+	c.saveState()
 	rect = dict(rect)
 	for key, val in rect.items():
 		if 'w' in key:
@@ -63,19 +66,53 @@ def draw_text(c, rect, sheet, text, size):
 			rect[key] = rect[key]*sheet[1]
 	c.setFillColorRGB(0,0,0) # Color fill
 	c.setFont("Helvetica", size)
-	c.drawString(rect['w_l'], rect['h_b'], text)
+	
+	# KWARGS DATA VALIDATION #
+	kwarg_list = {'align':'', 'spac':''}
+	valid = False
+	ans = ''
+	if len(kwargs) > 2:
+		ans = 'Only 2 kwargs may be specified'
+	elif not(set(kwargs) <= set(kwarg_list)):
+		ans = 'One of the params introduced is not expected'
+	else: valid = True
+	# END DATA VALIDATION #
+	
+	if valid == True:
+		print(rect['w_l'])
+		print(rect['h_b'])
+		for key, value in kwargs.items():
+			kwarg_list[key] = kwargs[key]        
+		if kwarg_list['spac'] != '':
+			rect['w_l'] = rect['w_l'] + kwarg_list['spac'][0]
+			rect['h_b'] = rect['h_b'] + kwarg_list['spac'][1]
+		if kwarg_list['align'] == 'centre':
+			c.drawCentredString(rect['w_l'], rect['h_b'], text)
+		elif kwarg_list['align'] == 'right':
+			c.drawRightString(rect['w_l'], rect['h_b'], text)
+		else:
+			c.drawString(rect['w_l'], rect['h_b'], text)
 
-
-'''
-
-
-    
-    	c.translate(rect['w_l'], rect['h_b'])
-	c.setFillColorRGB(1,1,1) # Color fill
-	c.setLineWidth(0.1)
-	c.rect(0, 0, rect['w_c'], rect['h_c'], fill=1) # (x0,y0,w,l)
-	c.translate(-rect['w_l'], -rect['h_b'])
-	c.setFillColorRGB(0,0,0) # Color fill
-	c.drawCentredString(0, 0, 'text')
 	c.restoreState()
+	
+	
+'''
+    if len(kwargs) == 0:
+        c.drawString(rect['w_l'], rect['h_b'], text)
+            print('first option')
+        else:
+	        
+        elif len(kwargs) == 1:
+            for key, value in kwargs.items():
+                if key == 'spac':
+	                
+	            if key == 'align':
+	                if value == 'centre':
+	                    c.drawCentredString(rect['w_l'], rect['h_b'], text)
+	                elif value == 'right':
+	                    c.drawRightString(rect['w_l'], rect['h_b'], text)
+	                else:
+	                    c.drawString(rect['w_l'], rect['h_b'], text)
+	                    
+	            print(key, ' ', value)
 '''
