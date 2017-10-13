@@ -2,9 +2,13 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A3, landscape
 from plo_rplab import rect_data, draw_box, draw_text
 
+from reportlab.platypus import SimpleDocTemplate, Paragraph
+from reportlab.lib.styles import getSampleStyleSheet
+
 sheet_from = (421.6, 298.1)
 sheet_to = landscape(A3)
 c = canvas.Canvas("h.pdf", pagesize=sheet_to)
+
 
 # ############
 # # OUTERBOX #
@@ -43,9 +47,25 @@ spacings = (4,50) # dw, dh pixel points
 draw_text(c, topboxes[box_ID], sheet_to, 'CLIENTE:', 9, spac=spacings)
 
 
+# Topbox 2 Content #
+#*******************
 
+#******************************************************
+box_ID = 1
+spacings = (4,50) # dw, dh pixel points
+#******************************************************
+draw_text(c, topboxes[box_ID], sheet_to, 'TRABAJO:', 9, spac=spacings)
 
+doc = SimpleDocTemplate("phello.pdf")
+styles = getSampleStyleSheet()
+print(styles['Normal'])
 
+style = styles["Normal"]
+p = Paragraph('hola', style)
+Story = []
+Story.append(p)
+
+doc.build(Story)
 
 c.showPage()
 c.save()

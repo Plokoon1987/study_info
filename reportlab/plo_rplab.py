@@ -79,8 +79,6 @@ def draw_text(c, rect, sheet, text, size, **kwargs):
 	# END DATA VALIDATION #
 	
 	if valid == True:
-		print(rect['w_l'])
-		print(rect['h_b'])
 		for key, value in kwargs.items():
 			kwarg_list[key] = kwargs[key]        
 		if kwarg_list['spac'] != '':
@@ -94,25 +92,3 @@ def draw_text(c, rect, sheet, text, size, **kwargs):
 			c.drawString(rect['w_l'], rect['h_b'], text)
 
 	c.restoreState()
-	
-	
-'''
-    if len(kwargs) == 0:
-        c.drawString(rect['w_l'], rect['h_b'], text)
-            print('first option')
-        else:
-	        
-        elif len(kwargs) == 1:
-            for key, value in kwargs.items():
-                if key == 'spac':
-	                
-	            if key == 'align':
-	                if value == 'centre':
-	                    c.drawCentredString(rect['w_l'], rect['h_b'], text)
-	                elif value == 'right':
-	                    c.drawRightString(rect['w_l'], rect['h_b'], text)
-	                else:
-	                    c.drawString(rect['w_l'], rect['h_b'], text)
-	                    
-	            print(key, ' ', value)
-'''
