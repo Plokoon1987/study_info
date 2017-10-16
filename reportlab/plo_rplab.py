@@ -1,3 +1,7 @@
+from reportlab.pdfgen import canvas
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import Paragraph, Frame
+
 def rect_data(sheet, ratio=False, **kwargs):
 	rect_w_data = {'w_l':0,'w_c':0,'w_r':0}
 	rect_h_data = {'h_b':0,'h_c':0,'h_t':0}
@@ -54,38 +58,6 @@ def draw_box(c, rect, sheet):
 	c.setLineWidth(0.1)
 	c.rect(rect['w_l'], rect['h_b'], rect['w_c'], rect['h_c'], fill=1)
 	c.restoreState()
-	
-
-def draw_image(c, rect, sheet, img, **kwargs):
-	c.saveState()
-	rect = dict(rect)
-	for key, val in rect.items():
-		if 'w' in key:
-			rect[key] = rect[key]*sheet[0]
-		elif 'h' in key:
-			rect[key] = rect[key]*sheet[1]
-	
-	# KWARGS DATA VALIDATION #
-	kwarg_list = {'l_pad':0, 'r_pad':0,'b_pad':0, 't_pad':0}
-	valid = False
-	ans = ''
-	if len(kwargs) > 4:
-		ans = 'Only 4 kwargs may be specified'
-	elif not(set(kwargs) <= set(kwarg_list)):
-		ans = 'One of the params introduced is not expected'
-	else: valid = True
-	# END DATA VALIDATION #
-	
-	if valid == True:
-		for key, value in kwargs.items():
-			kwarg_list[key] = kwargs[key]
-		rect['w_l'] += kwarg_list['l_pad']
-		rect['h_b'] += kwarg_list['b_pad']
-		rect['w_c'] -= (kwarg_list['r_pad'] + kwarg_list['l_pad'])
-		rect['h_c'] -= (kwarg_list['t_pad'] + kwarg_list['b_pad'])
-        
-	c.drawImage(img, rect['w_l'],rect['h_b'], width=rect['w_c'], height=rect['h_c'])
-	c.restoreState()
 
 
 def draw_text(c, rect, sheet, text, size, **kwargs):
@@ -122,5 +94,77 @@ def draw_text(c, rect, sheet, text, size, **kwargs):
 			c.drawRightString(rect['w_l'], rect['h_b'], text)
 		else:
 			c.drawString(rect['w_l'], rect['h_b'], text)
+
+	c.restoreState()
+
+
+def draw_image(c, rect, sheet, img, **kwargs):
+	c.saveState()
+	rect = dict(rect)
+	for key, val in rect.items():
+		if 'w' in key:
+			rect[key] = rect[key]*sheet[0]
+		elif 'h' in key:
+			rect[key] = rect[key]*sheet[1]
+	
+	# KWARGS DATA VALIDATION #
+	kwarg_list = {'l_pad':0, 'r_pad':0,'b_pad':0, 't_pad':0}
+	valid = False
+	ans = ''
+	if len(kwargs) > 4:
+		ans = 'Only 4 kwargs may be specified'
+	elif not(set(kwargs) <= set(kwarg_list)):
+		ans = 'One of the params introduced is not expected'
+	else: valid = True
+	# END DATA VALIDATION #
+	
+	if valid == True:
+		for key, value in kwargs.items():
+			kwarg_list[key] = kwargs[key]
+		rect['w_l'] += kwarg_list['l_pad']
+		rect['h_b'] += kwarg_list['b_pad']
+		rect['w_c'] -= (kwarg_list['r_pad'] + kwarg_list['l_pad'])
+		rect['h_c'] -= (kwarg_list['t_pad'] + kwarg_list['b_pad'])
+		c.drawImage(img, rect['w_l'],rect['h_b'], width=rect['w_c'], height=rect['h_c'])
+	c.restoreState()
+
+
+def draw_paragraph(c, rect, sheet, text, **kwargs):
+	c.saveState()
+	rect = dict(rect)
+	for key, val in rect.items():
+		if 'w' in key:
+			rect[key] = rect[key]*sheet[0]
+		elif 'h' in key:
+			rect[key] = rect[key]*sheet[1]
+	
+	# KWARGS DATA VALIDATION #
+	kwarg_list = {'l_pad':0, 'r_pad':0,'b_pad':0, 't_pad':0}
+	valid = False
+	ans = ''
+	if len(kwargs) > 4:
+		ans = 'Only 4 kwargs may be specified'
+	elif not(set(kwargs) <= set(kwarg_list)):
+		ans = 'One of the params introduced is not expected'
+	else: valid = True
+	# END DATA VALIDATION #
+	
+	if valid == True:
+		for key, value in kwargs.items():
+			kwarg_list[key] = kwargs[key]
+		rect['w_l'] += kwarg_list['l_pad']
+		rect['h_b'] += kwarg_list['b_pad']
+		rect['w_c'] -= (kwarg_list['r_pad'] + kwarg_list['l_pad'])
+		rect['h_c'] -= (kwarg_list['t_pad'] + kwarg_list['b_pad'])
+		
+		styles = getSampleStyleSheet()
+		styleN = styles['Title']
+		f = Frame(
+			rect['w_l'], rect['h_b'], rect['w_c'], rect['h_c'],
+			showBoundary=0, 
+			leftPadding=0, rightPadding=0, bottomPadding=0, topPadding=0)
+		story = [Paragraph(text, styleN)]
+		print(story)
+		f.addFromList(story,c)
 
 	c.restoreState()

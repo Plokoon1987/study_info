@@ -1,26 +1,24 @@
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A3, landscape
-from plo_rplab import rect_data, draw_box, draw_image, draw_text
+from plo_rplab import rect_data, draw_box, draw_text, draw_image, draw_paragraph
 
-from reportlab.platypus import SimpleDocTemplate, Paragraph
-from reportlab.lib.styles import getSampleStyleSheet
 
 sheet_from = (421.6, 298.1)
 sheet_to = landscape(A3)
 c = canvas.Canvas("h.pdf", pagesize=sheet_to)
 
 
-# ############
-# # OUTERBOX #
-# ############
+									############
+									# OUTERBOX #
+									############
 
 outerbox = rect_data(sheet_from, ratio=True, w_l=24, w_r=9.5, h_b=14.2, h_t=21.6)
 draw_box(c, outerbox, sheet_to)
 
 
-# ############
-# # TOPBOXES #
-# ############
+									############
+									# TOPBOXES #
+									############
 
 #******************************************************
 dim = (25.1, 11.4, 22.2, 21.4) # x_l, x_r, y_t, y_c (same units as sheet_from)
@@ -37,41 +35,38 @@ for length, a in zip(topb_lengths, range(len(topb_lengths))):
 	x_st += l + horz_sp
 
 
+#*******************
 # Topbox 1 Content #
 #*******************
 box_ID = 0
 
 #Text
-#******************************************************
+#******
 spacings = (4,50) # dw, dh pixel points
-#******************************************************
+#******
 draw_text(c, topboxes[box_ID], sheet_to, 'CLIENTE:', 9, spac=spacings)
 
 #Image
-#******************************************************
-draw_image(c, topboxes[box_ID], sheet_to, 'image.jpg', l_pad=10, r_pad=120, b_pad=10, t_pad=15)
-draw_image(c, topboxes[box_ID], sheet_to, 'image.jpg', l_pad=120, r_pad=10, b_pad=10, t_pad=15)
+#******
+draw_image(c, topboxes[box_ID], sheet_to, 'image.jpg', l_pad=5, r_pad=5, b_pad=5, t_pad=15)
 
 
+#*******************
 # Topbox 2 Content #
 #*******************
-'''
-#******************************************************
 box_ID = 1
+
+#Text
+#******
 spacings = (4,50) # dw, dh pixel points
-#******************************************************
+#******
 draw_text(c, topboxes[box_ID], sheet_to, 'TRABAJO:', 9, spac=spacings)
 
-doc = SimpleDocTemplate("phello.pdf")
-styles = getSampleStyleSheet()
-print(styles['Normal'])
+#Paragraph
+texto = 'PROYECTO DE CONSTRUCCIÓN LAV CANTÁBRICO-MEDITERRANEO. TRAMO: OLITE-TAFALLA'
+#******
+#draw_paragraph(c, topboxes[box_ID], sheet_to, texto, l_pad=38, r_pad=38, b_pad=5, t_pad=15)
+draw_paragraph(c, topboxes[box_ID], sheet_to, texto, l_pad=-100, r_pad=-100, b_pad=-200, t_pad=0)
 
-style = styles["Normal"]
-p = Paragraph('hola', style)
-Story = []
-Story.append(p)
-
-doc.build(Story)
-'''
 c.showPage()
 c.save()
