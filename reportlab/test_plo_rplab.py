@@ -1,6 +1,6 @@
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A3, landscape
-from plo_rplab import rect_data, draw_box, draw_text
+from plo_rplab import rect_data, draw_box, draw_image, draw_text
 
 from reportlab.platypus import SimpleDocTemplate, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
@@ -39,17 +39,23 @@ for length, a in zip(topb_lengths, range(len(topb_lengths))):
 
 # Topbox 1 Content #
 #*******************
-
-#******************************************************
 box_ID = 0
+
+#Text
+#******************************************************
 spacings = (4,50) # dw, dh pixel points
 #******************************************************
 draw_text(c, topboxes[box_ID], sheet_to, 'CLIENTE:', 9, spac=spacings)
 
+#Image
+#******************************************************
+draw_image(c, topboxes[box_ID], sheet_to, 'image.jpg', l_pad=10, r_pad=120, b_pad=10, t_pad=15)
+draw_image(c, topboxes[box_ID], sheet_to, 'image.jpg', l_pad=120, r_pad=10, b_pad=10, t_pad=15)
+
 
 # Topbox 2 Content #
 #*******************
-
+'''
 #******************************************************
 box_ID = 1
 spacings = (4,50) # dw, dh pixel points
@@ -66,6 +72,6 @@ Story = []
 Story.append(p)
 
 doc.build(Story)
-
+'''
 c.showPage()
 c.save()
