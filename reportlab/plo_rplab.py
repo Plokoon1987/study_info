@@ -1,6 +1,7 @@
 from reportlab.pdfgen import canvas
-from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import Paragraph, Frame
+
 
 def rect_data(sheet, ratio=False, **kwargs):
 	rect_w_data = {'w_l':0,'w_c':0,'w_r':0}
@@ -157,14 +158,19 @@ def draw_paragraph(c, rect, sheet, text, **kwargs):
 		rect['w_c'] -= (kwarg_list['r_pad'] + kwarg_list['l_pad'])
 		rect['h_c'] -= (kwarg_list['t_pad'] + kwarg_list['b_pad'])
 		
-		styles = getSampleStyleSheet()
-		styleN = styles['Title']
+		style = ParagraphStyle(
+			name ='hola',
+			fontName = 'Helvetica',
+			fontSize=11,
+			leading=13,
+			alignment=1,
+			spaceAfter=1)
+
 		f = Frame(
 			rect['w_l'], rect['h_b'], rect['w_c'], rect['h_c'],
 			showBoundary=0, 
 			leftPadding=0, rightPadding=0, bottomPadding=0, topPadding=0)
-		story = [Paragraph(text, styleN)]
-		print(story)
+		story = [Paragraph(text, style)]
 		f.addFromList(story,c)
 
 	c.restoreState()

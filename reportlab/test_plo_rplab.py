@@ -63,10 +63,9 @@ spacings = (4,50) # dw, dh pixel points
 draw_text(c, topboxes[box_ID], sheet_to, 'TRABAJO:', 9, spac=spacings)
 
 #Paragraph
-texto = 'PROYECTO DE CONSTRUCCIÓN LAV CANTÁBRICO-MEDITERRANEO. TRAMO: OLITE-TAFALLA'
+texto = '<b>PROYECTO DE CONSTRUCCIÓN LAV CANTÁBRICO-MEDITERRANEO. TRAMO: OLITE-TAFALLA</b>'
 #******
-#draw_paragraph(c, topboxes[box_ID], sheet_to, texto, l_pad=38, r_pad=38, b_pad=5, t_pad=15)
-draw_paragraph(c, topboxes[box_ID], sheet_to, texto, l_pad=-100, r_pad=-100, b_pad=-200, t_pad=0)
+draw_paragraph(c, topboxes[box_ID], sheet_to, texto, l_pad=29, r_pad=29, b_pad=5, t_pad=15)
 
 c.showPage()
 c.save()
