@@ -130,7 +130,7 @@ def draw_image(c, rect, sheet, img, **kwargs):
 	c.restoreState()
 
 
-def draw_paragraph(c, rect, sheet, text, **kwargs):
+def draw_paragraph(c, rect, sheet, text, style, **kwargs):
 	c.saveState()
 	rect = dict(rect)
 	for key, val in rect.items():
@@ -140,11 +140,11 @@ def draw_paragraph(c, rect, sheet, text, **kwargs):
 			rect[key] = rect[key]*sheet[1]
 	
 	# KWARGS DATA VALIDATION #
-	kwarg_list = {'l_pad':0, 'r_pad':0,'b_pad':0, 't_pad':0}
+	kwarg_list = {'l_pad':0, 'r_pad':0,'b_pad':0, 't_pad':0, 'bbox':0}
 	valid = False
 	ans = ''
-	if len(kwargs) > 4:
-		ans = 'Only 4 kwargs may be specified'
+	if len(kwargs) > 5:
+		ans = 'Only 5 kwargs may be specified'
 	elif not(set(kwargs) <= set(kwarg_list)):
 		ans = 'One of the params introduced is not expected'
 	else: valid = True
@@ -157,20 +157,51 @@ def draw_paragraph(c, rect, sheet, text, **kwargs):
 		rect['h_b'] += kwarg_list['b_pad']
 		rect['w_c'] -= (kwarg_list['r_pad'] + kwarg_list['l_pad'])
 		rect['h_c'] -= (kwarg_list['t_pad'] + kwarg_list['b_pad'])
-		
-		style = ParagraphStyle(
-			name ='hola',
-			fontName = 'Helvetica',
-			fontSize=11,
-			leading=13,
-			alignment=1,
-			spaceAfter=1)
 
 		f = Frame(
 			rect['w_l'], rect['h_b'], rect['w_c'], rect['h_c'],
-			showBoundary=0, 
+			showBoundary=kwarg_list['bbox'], 
 			leftPadding=0, rightPadding=0, bottomPadding=0, topPadding=0)
 		story = [Paragraph(text, style)]
 		f.addFromList(story,c)
+
+	c.restoreState()
+	
+def draw_frame(c, rect, sheet, **kwargs):
+	c.saveState()
+	rect = dict(rect)
+	for key, val in rect.items():
+		if 'w' in key:
+			rect[key] = rect[key]*sheet[0]
+		elif 'h' in key:
+			rect[key] = rect[key]*sheet[1]
+	
+	# KWARGS DATA VALIDATION #
+	kwarg_list = {'l_pad':0, 'r_pad':0,'b_pad':0, 't_pad':0, 'bbox':0}
+	valid = False
+	ans = ''
+	if len(kwargs) > 5:
+		ans = 'Only 5 kwargs may be specified'
+	elif not(set(kwargs) <= set(kwarg_list)):
+		ans = 'One of the params introduced is not expected'
+	else: valid = True
+	# END DATA VALIDATION #
+	
+	if valid == True:
+		for key, value in kwargs.items():
+			kwarg_list[key] = kwargs[key]
+		rect['w_l'] += kwarg_list['l_pad']
+		rect['h_b'] += kwarg_list['b_pad']
+		rect['w_c'] -= (kwarg_list['r_pad'] + kwarg_list['l_pad'])
+		rect['h_c'] -= (kwarg_list['t_pad'] + kwarg_list['b_pad'])
+
+		f = Frame(
+			rect['w_l'], rect['h_b'], rect['w_c'], rect['h_c'],
+			showBoundary=kwarg_list['bbox'], 
+			leftPadding=0, rightPadding=0, bottomPadding=0, topPadding=0)
+		'''
+		story = [Paragraph('hola', style)]
+		f.addFromList(story,c)
+		'''
 
 	c.restoreState()
