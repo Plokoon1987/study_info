@@ -6,6 +6,7 @@ def Plantilla(c, d):
 	from reportlab.lib.styles import ParagraphStyle
 	from plo_rplab import rect_data, draw_box, draw_text, draw_image, draw_paragraph
 	from reportlab.platypus import Frame
+	from reportlab.lib.styles import getSampleStyleSheet
 	style1 = ParagraphStyle(
 		name ='hola',
 		fontName = 'Helvetica',
@@ -159,27 +160,3 @@ def Plantilla(c, d):
 	#Paragraph
 	texto = '<b> STU 312 +439 (I:25º)</b>'
 	draw_paragraph(c, topboxes[box_ID], sheet_to, texto, style3, l_pad=68, r_pad=10,t_pad=2,b_pad=47, bbox=1)
-
-	
-	##########
-	# FRAMES #
-	##########
-	
-	txt = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'*100
-
-	#******************************************************
-	dim = (25, 11, 26.7, 44.5) # x_l, x_r, y_b, y_t (same units as sheet_from)
-	frame_lengths = (26.5,114,4.5,16.4,10.7,11.9,19.5,16.3,35.1,129.1) #(same units as sheet_from)
-	horz_sp = 1 #(same units as sheet_from)
-	#******************************************************
-	frameboxes = []
-	tot_length = sheet_from[0] - dim[0] - dim[1] - (len(frame_lengths)-1)*horz_sp
-	x_st = dim[0]
-	for length, a in zip(frame_lengths, range(len(frame_lengths))):
-		l = length/sum(frame_lengths)*tot_length
-		frameboxes.append(rect_data(sheet_from, ratio=True, w_l=x_st, w_c=l, h_b=dim[2], h_t=dim[3]))
-
-		draw_box(c, frameboxes[a], sheet_to)
-		draw_paragraph(c, frameboxes[a], sheet_to, txt, style1)
-		x_st += l + horz_sp
-
