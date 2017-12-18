@@ -2,39 +2,45 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import matplotlib.ticker as mticker
 
-def Bloque(prof_ag, perf, prof_pag, ruta):
+def Bloque(prof_ag, perf, ruta, prof_pag=None):
+	#### Profundidad ####
+	if prof_ag: profundidad=prof_ag
+	else: profundidad=0
+	for key in perf.keys():
+		if perf[key]:
+			for elem in perf[key]:
+				if elem['profundidad'] > profundidad: profundidad = elem['profundidad']
 	
-	#### Profundidad #### -> Obtenida por los avances
-	profundidad=0
-	for elem in perf['avances']:
-		if elem['profundidad'] > profundidad: profundidad = elem['profundidad']
+	if prof_pag:
+		prof_pag = (0,) + prof_pag
+	else:
+		prof_pag = (0,)
+		for x in range(0, int(profundidad), 10):
+			if profundidad - x >= 10:
+				prof_pag = prof_pag + (x+10,)
+			else:
+				prof_pag = prof_pag + (profundidad,)
+	
 	#####################
-	'''
-	#### Profundidades por página #### -> Establece las profundidades a incluir en cada página
-	prof_pag = list(prof_pag)
-	if sum(prof_pag) > profundidad: print('La suma de profundidades no puede ser mayor que el avance máximo'); prof_pag = 0
-	elif sum(prof_pag) < profundidad: prof_pag.append(profundidad-sum(prof_pag))
-	prof_pag_aux = []
-	import ipdb; ipdb.set_trace()    # TODO:  erase!!!!
-	for elem in prof_pag:
-		prof_pag_aux.append(list(range(int(elem))))
-	prof_pag = prof_pag_aux
-	#####################
-    '''
+
 
 	#### Creando Bloques ####
 	
 	# Bloque 1
 	#### Tipo de Perforación ####
 	tip_perf = perf['herr']
-		
+	
 	#### Avances ####
 	avances = perf['avances']
 	
 	#### Revestimiento ####
 	reves = perf['reves']
+	
+	
+	
+	
 
-	Bloque1(profundidad, prof_pag, tip_perf, avances, reves, prof_ag, ruta, 1, 1)	
+	Bloque1(profundidad, prof_pag, tip_perf, avances, reves, prof_ag, ruta)	
 
 	
 	# Bloque 2
@@ -86,6 +92,12 @@ def Bloque(prof_ag, perf, prof_pag, ruta):
 	Q_de_barton = perf['barton']
 	
 	Bloque8(profundidad, prof_pag, Q_de_barton, ruta)
+	
+	
+	# Bloque 9
+	#### Muestras/Ensayos ####
+	
+	Bloque9(profundidad, prof_pag, Q_de_barton, ruta)
 
 
 
@@ -117,11 +129,11 @@ def guardar(figure, ruta, nombre):
 
 
 
-def Bloque1(prof, prof_pag, perf, avan, reves, prof_ag, ruta, adjx, adjy):
+def Bloque1(prof, prof_pag, perf, avan, reves, prof_ag, ruta):
 
 	bl_sizew=(5.8,4.4,4.4,4.4,4.4,3.5)
 	bl_sizeh=(28.8,198.5)
-	PageSizeInch = {'Sheet':(sum(bl_sizew)/25.4*adjx, sum(bl_sizeh)/25.4*adjy)}
+	PageSizeInch = {'Sheet':(sum(bl_sizew)/25.4, sum(bl_sizeh)/25.4)}
 
 	# *********************
 	# 1) ***** Figure *****
@@ -726,3 +738,68 @@ def Bloque8(prof, prof_pag, q_barton, ruta):
 	# ***********************
 
 	guardar(fig, ruta, 'bloque8')
+
+
+def Bloque9(prof, prof_pag, q_barton, ruta):
+
+	bl_sizew=(5.1,8.8,16.5,4.9)
+	bl_sizeh=(7.5,21.3,198.5)
+	PageSizeInch = {'Sheet':(sum(bl_sizew)/25.4, sum(bl_sizeh)/25.4)}
+
+	# *********************
+	# 1) ***** Figure *****
+	# *********************   
+	fig = plt.figure(figsize=PageSizeInch['Sheet'])
+
+	# ***********************
+	# 2) ***** PLOT *****
+	# ***********************
+	num_fil=3
+	num_col=len(bl_sizew)
+	cuerpo_grid = gridspec.GridSpec(num_fil,num_col, width_ratios=bl_sizew, height_ratios=bl_sizeh, wspace=0, hspace=0)
+	cuerpo_grid.update(left=0, right=1, bottom=0, top=1)
+	
+	# Creando Encabezados
+	titulo = 'Muestras/Ensayos'
+	subtitulos = 'Tipo', 'Intervalo (m)', 'Resultados', 'Golpes/30cm'
+	min_x = 0
+	max_x = 1
+	
+	plot_titulo = fig.add_subplot(cuerpo_grid[0,0:4])
+	plot_titulo.set_xlim(xmin=min_x, xmax=max_x)
+	plot_titulo.tick_params(labelbottom='off', bottom='off', labelleft='off', left='off')	
+	plot_titulo.text(0.5, 0.5, titulo, color='k', ha='center', va='center', size='x-small', rotation=0)
+	set_axis_appearance(plot_titulo, lwidth=0.2)
+	
+	plot_subtitulos = []
+	for x in range(len(subtitulos)):
+		plot_subtitulos.append(fig.add_subplot(cuerpo_grid[1,x]))
+		plot_subtitulos[x].set_xlim(xmin=min_x, xmax=max_x)
+		plot_subtitulos[x].tick_params(labelbottom='off', bottom='off', labelleft='off', left='off')
+		plot_subtitulos[x].text(0.5, 0.05, subtitulos[x], color='k', ha='center', va='bottom', size='x-small', rotation=90)
+		set_axis_appearance(plot_subtitulos[x], lwidth=0.2)
+	
+	
+	# Creando Gráficos y dando formato-> Solo el contenedor
+	
+	plot_grafica = []
+	for x in range(num_col):
+		plot_grafica.append(fig.add_subplot(cuerpo_grid[2,x]))
+		plot_grafica[x].tick_params(labelbottom='off', bottom='off', labelleft='off', left='off', direction='in')
+		plot_grafica[x].set_ylim(ymin=prof, ymax=0)
+		plot_grafica[x].set_xlim(xmin=min_x, xmax=max_x)
+		set_axis_appearance(plot_grafica[x], lwidth=0.2)
+		
+	grid_main = (0.25,0.5,0.75)
+	for x in grid_main:
+		plot_grafica[2].axvline(x, linewidth=0.2, color='k')
+	
+	
+	
+	'''
+	plot_grafica.fill_between(x=q_bart, y1=maniob, y2=0.001, color='#14527F',linewidth=0)
+	'''
+	# ***********************
+	# X) ***** SAVING *****
+	# ***********************
+	guardar(fig, ruta, 'bloque9')

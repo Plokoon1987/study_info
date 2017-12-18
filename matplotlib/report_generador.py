@@ -105,10 +105,10 @@ perforacion = {
 	'barton': Q_de_barton_datos
 	}
 prof_agua = 5.69
-prof_por_pag = [6, 4]
+prof_por_pag = (6, 4)
 ruta = './'
 
-Bloque(prof_agua, perforacion, prof_por_pag, ruta)
+Bloque(prof_agua, perforacion, ruta, prof_por_pag)
 
 img_1 = './images/image.jpg'
 trabajo = '<b>PROYECTO DE CONSTRUCCIÓN LAV CANTÁBRICO-MEDITERRANEO. TRAMO: OLITE-TAFALLA</b>'
